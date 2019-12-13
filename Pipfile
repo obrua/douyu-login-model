@@ -1,16 +1,18 @@
 [[source]]
 name = "pypi"
-url = "https://pypi.org/simple"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
 verify_ssl = true
 
 [dev-packages]
 autopep8 = "*"
 
 [packages]
-qrcode = "*"
 loguru = "*"
 python-dotenv = "*"
 requests = "*"
+pypng = "*"
+pillow = "*"
+qrcode = "*"
 
 [requires]
 python_version = "3.7"
