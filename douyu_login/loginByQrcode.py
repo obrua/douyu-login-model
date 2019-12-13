@@ -98,7 +98,7 @@ def redirect_scan_qrcode_success(session, loginurl):
             logger.warning(f'登录失败 {res_json}')
             return False
 
-        save_cookie_to_txt(session)
+        return save_cookie_to_txt(session)
 
     except Exception as e:
         logger.exception(f'登录异常 {e}')
@@ -110,6 +110,7 @@ def pc_qrcode_login():
     session = requests.Session()
     code = None
     ttl = None
+    bsuss = False
     while True:
         code, ttl = pc_get_qrcode(session)
         if ttl and ttl>0:
@@ -124,10 +125,15 @@ def pc_qrcode_login():
         logger.success('扫码成功，开始执行登录!')
         if redirect_scan_qrcode_success(session, loginurl):
             logger.success('登录&&保存cookie 成功!')
+            bsuss = True
         else:
             logger.success('执行登录失败!')
+            bsuss = False
     else:
         logger.error('登录失败')
+        bsuss = False
+    
+    return bsuss
 
 def get_cookie_from_txt():
     # 从txt获取cookie
@@ -173,6 +179,7 @@ def test_get_csrf_cookie(cookie):
     # 验证cookie是否有效，并且获取Crsf
     # acf_ccn
     try:
+        logger.info('验证&&获取csrf...')
         baseheaders = {
             'referer': 'https://www.douyu.com/9999',
             'origin': 'https://www.douyu.com',
@@ -189,7 +196,7 @@ def test_get_csrf_cookie(cookie):
             res = res.json()
             if res['error']==0 and res['msg']=='ok':
                 logger.success('验证&&获取csrf，成功！')
-                save_cookie_to_txt(s.cookies)
+                save_cookie_to_txt(s)
                 return True
             else:
                 logger.error(f'错误提示：{res}')
