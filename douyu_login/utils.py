@@ -1,23 +1,18 @@
 import sys
+from basemodule.logger import logger
+from urllib.parse import unquote
 
-# try:
-#     b = u'\u2588'
-#     sys.stdout.write(b + '\r')
-#     sys.stdout.flush()
-# except UnicodeEncodeError:
-#     BLOCK = 'MM'
-# else:
-#     BLOCK = b
 
-# def print_cmd_qr(qrText, white=BLOCK, black='  ', enableCmdQR=True):
-#     blockCount = int(enableCmdQR)
-#     if abs(blockCount) == 0:
-#         blockCount = 1
-#     white *= abs(blockCount)
-#     if blockCount < 0:
-#         white, black = black, white
-#     sys.stdout.write(' '*50 + '\r')
-#     sys.stdout.flush()
-#     qr = qrText.replace('0', white).replace('1', black)
-#     sys.stdout.write(qr)
-#     sys.stdout.flush()
+def get_uidAndname(cookie_douyu):
+    acf_uid = None
+    acf_nickname = ''
+    try:
+        if 'acf_uid' in cookie_douyu.keys():
+            acf_uid = cookie_douyu['acf_uid']
+        if 'acf_nickname' in cookie_douyu.keys():
+            acf_nickname = cookie_douyu['acf_nickname']
+            acf_nickname = unquote(acf_nickname, 'utf-8')
+    except Exception as e:
+        logger.exception(e)
+
+    return acf_uid, acf_nickname
