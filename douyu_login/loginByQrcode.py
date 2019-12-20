@@ -9,6 +9,7 @@ from PIL import Image
 from basemodule.config import Config, BASE_DIR
 from basemodule.logger import logger
 from . import utils
+import platform
 
 cookie_file = os.path.join(BASE_DIR, 'cookie_douyu.txt')
 qrcode_file = os.path.join(BASE_DIR, 'qrcode.png')
@@ -47,13 +48,16 @@ def pc_get_qrcode(session):
         qr.add_data(scan_url)
         qr.make(fit=True)
 
-        img = qr.make_image(fill_color="black", back_color="white")
-        # ?print_ascii 对cmd不友好, 直接使用图片
-        img.save(qrcode_file)
-        os.startfile(qrcode_file)
 
-        #invert=True白底黑块,有些app不识别黑底白块.
-        #qr.print_ascii(out=None, tty=False, invert=True)
+        if 'windows' in platform.platform().lower():
+            img = qr.make_image(fill_color="black", back_color="white")
+            # ?print_ascii 对cmd不友好, 直接使用图片
+            img.save(qrcode_file)
+            os.startfile(qrcode_file)
+        else:
+            #invert=True白底黑块,有些app不识别黑底白块.
+            qr.print_ascii(out=None, tty=False, invert=True)
+
 
         return code,ttl
 
